@@ -1,4 +1,5 @@
 import os
+import sys
 import csv
 
 # print(os.curdir)
@@ -9,6 +10,15 @@ import csv
 # cwd = os.getcwd()
 # print(cwd)
 # print(os.stat("/Applications/MAMP/htdocs/Python/"))
+php_versions = {
+    "x-httpd-php52": 5.2,
+    "x-httpd-php53": 5.3,
+    "x-httpd-php54": 5.4,
+    "x-httpd-php55": 5.5,
+    "x-httpd-php56": 5.6,
+    "x-httpd-php70": 7.0,
+    "x-httpd-php71": 7.0,
+}
 
 
 def htaccess_exist():
@@ -27,6 +37,9 @@ def check_version():
         for line in ht_file:
             array.append(line.strip('\n'))
         print(array)
+        php_ver = array[0][23:36]
+        if php_ver in php_versions:
+            print(php_versions[php_ver])
         ht_file.close()
 
 
