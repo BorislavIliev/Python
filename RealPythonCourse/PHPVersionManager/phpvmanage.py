@@ -1,6 +1,6 @@
 import os
 import sys
-import csv
+import getopt
 
 
 # print(os.curdir)
@@ -11,6 +11,38 @@ import csv
 # cwd = os.getcwd()
 # print(cwd)
 # print(os.stat("/Applications/MAMP/htdocs/Python/"))
+def main(argv):
+    inputfile = ''
+    outputfile = ''
+    try:
+        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])
+    except getopt.GetoptError:
+        print 'No such option. Please use: test.py -i <inputfile> -o <outputfile>'
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print 'test.py -i <inputfile> -o <outputfile>'
+            sys.exit()
+        elif opt in ("-i", "--ifile"):
+            inputfile = arg
+        elif opt in ("-o", "--ofile"):
+            outputfile = arg
+    print'Input file is ', inputfile
+    print'Output file is ', outputfile
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
+
+
+def fn1():
+    print 'fn1 selected'
+
+
+def fn2():
+    print 'fn2 selected'
+
+
 php_versions = {
     "x-httpd-php52": 5.2,
     "x-httpd-php53": 5.3,
@@ -59,6 +91,7 @@ def cache_reader():
                     print("Directory does not exist!")
         # cachefile.close()
 
-htaccess_exist()
-check_version()
-cache_reader()
+
+#htaccess_exist()
+#check_version()
+#cache_reader()
