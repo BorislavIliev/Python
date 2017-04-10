@@ -15,17 +15,19 @@ def main(argv):
     cpaneluser = ''
     cms = ''
     def mysql_connection(dbuser, dbname, dbpass):
-        db = MySQLdb.connect(host='localhost', user=dbuser, passwd=dbpass, db=dbname)
-        # Check if connection was successful
-        if (db):
-            # Carry out normal procedure
-            # print "Connection successful"
-            db.close()
+        try:
+            db = MySQLdb.connect(host='localhost', user=dbuser, passwd=dbpass, db=dbname)
             return 1
-        else:
-            # Terminate
-            # print "Connection unsuccessful"
-            return 0
+        # Check if connection was successful
+        except MySQLdb.Error, e:
+            try:
+                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                return None
+            except IndexError:
+                print "MySQL Error: %s" % str(e)
+                return None
+        except TypeError, e:
+            print(e)
 
     def shell_mysql_connection(dbuser, dbpass):
         pass
@@ -33,11 +35,9 @@ def main(argv):
     def wp_change_passwords():
         cp_path = os.path.join('/home/', cpaneluser)
         if not os.stat(cp_path):
-            print'No such directory'
+            print'No such dir.'
         else:
-            print cp_path
             for root, subFolders, files in os.walk(cp_path):
-                print root
                 wp_files = []
                 wp_users = dict()
                 if 'wp-config.php' in files:
