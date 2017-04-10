@@ -49,8 +49,8 @@ def main(argv):
                     wp_file_path = os.path.join(root, 'wp-config.php')
                     wp_files.append(wp_file_path)
 
-                for file in wp_files:
-                    with open(file, 'r') as wp_file:
+                for file1 in wp_files:
+                    with open(file1, 'r') as wp_file:
                         for line in wp_file:
                             if 'define(\'DB_USER\'' in line:
                                 new_line = line.strip('\n')
