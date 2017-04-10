@@ -32,43 +32,46 @@ def main(argv):
 
     def wp_change_passwords():
         cp_path = os.path.join('/home/', cpaneluser)
-        print cp_path
-        for root, subFolders, files in os.walk(cp_path):
-            print root
-            wp_files = []
-            wp_users = dict()
-            if 'wp-config.php' in files:
-                print(os.path.join(root, 'wp-config.php'))
-                wp_file_path = os.path.join(root, 'wp-config.php')
-                wp_files.append(wp_file_path)
+        if not os.stat(cp_path):
+            print'No such directory'
+        else:
+            print cp_path
+            for root, subFolders, files in os.walk(cp_path):
+                print root
+                wp_files = []
+                wp_users = dict()
+                if 'wp-config.php' in files:
+                    print(os.path.join(root, 'wp-config.php'))
+                    wp_file_path = os.path.join(root, 'wp-config.php')
+                    wp_files.append(wp_file_path)
 
-            for file in wp_files:
-                with open(file, 'r') as wp_file:
-                    for line in wp_file:
-                        if 'define(\'DB_USER\'' in line:
-                            new_line = line.strip('\n')
-                            if (re.match('define.*DB_USER.*\'(.*)\'', new_line)):
-                                m = re.match('define.*DB_USER.*\'(.*)\'', new_line)
-                                dbuser = m.groups()[0]
-                                print dbuser
-                        elif 'define(\'DB_NAME\'' in line:
-                            new_line = line.strip('\n')
-                            if (re.match('define.*DB_NAME.*\'(.*)\'', new_line)):
-                                m = re.match('define.*DB_NAME.*\'(.*)\'', new_line)
-                                dbname = m.groups()[0]
-                                print dbname
-                        elif 'define(\'DB_PASSWORD\'' in line:
-                            new_line = line.strip('\n')
-                            if (re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)):
-                                m = re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)
-                                dbpass = m.groups()[0]
-                                print dbpass
-                            # print mysql_connection(dbuser, dbuser, dbpass)
-                            conn_result = mysql_connection(dbuser, dbuser, dbpass)
-                            if conn_result == 1:
-                                print "Change"
-                            else:
-                                print "No change"
+                for file in wp_files:
+                    with open(file, 'r') as wp_file:
+                        for line in wp_file:
+                            if 'define(\'DB_USER\'' in line:
+                                new_line = line.strip('\n')
+                                if (re.match('define.*DB_USER.*\'(.*)\'', new_line)):
+                                    m = re.match('define.*DB_USER.*\'(.*)\'', new_line)
+                                    dbuser = m.groups()[0]
+                                    print dbuser
+                            elif 'define(\'DB_NAME\'' in line:
+                                new_line = line.strip('\n')
+                                if (re.match('define.*DB_NAME.*\'(.*)\'', new_line)):
+                                    m = re.match('define.*DB_NAME.*\'(.*)\'', new_line)
+                                    dbname = m.groups()[0]
+                                    print dbname
+                            elif 'define(\'DB_PASSWORD\'' in line:
+                                new_line = line.strip('\n')
+                                if (re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)):
+                                    m = re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)
+                                    dbpass = m.groups()[0]
+                                    print dbpass
+                                # print mysql_connection(dbuser, dbuser, dbpass)
+                                conn_result = mysql_connection(dbuser, dbuser, dbpass)
+                                if conn_result == 1:
+                                    print "Change"
+                                else:
+                                    print "No change"
 
     def random_generator(size=10,
                          chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
