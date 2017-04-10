@@ -35,9 +35,7 @@ def main(argv):
         if not os.stat(cp_path):
             print'No such directory'
         else:
-            print cp_path
             for root, subFolders, files in os.walk(cp_path):
-                print root
                 wp_files = []
                 wp_users = dict()
                 if 'wp-config.php' in files:
