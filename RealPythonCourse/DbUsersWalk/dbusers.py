@@ -1,8 +1,5 @@
 import os
 import sys
-import fnmatch
-import glob
-from os import walk
 import re
 import MySQLdb
 import string
@@ -14,26 +11,35 @@ import subprocess
 def main(argv):
     cpaneluser = ''
     cms = ''
-    def mysql_connection(dbuser, dbname, dbpass):
-        db = MySQLdb.connect(host='localhost', user=dbuser, passwd=dbpass, db=dbname)
-        # Check if connection was successful
-        if (db):
-            # Carry out normal procedure
-            # print "Connection successful"
+
+    def mysql_connection(dbuser, dbpass):
+        try:
+            db = MySQLdb.connect(host='localhost', user=dbuser, passwd=dbpass)
             db.close()
             return 1
-        else:
-            # Terminate
-            # print "Connection unsuccessful"
-            return 0
+        # Check if connection was successful
+        except MySQLdb.Error, e:
+            try:
+                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                return None
+            except IndexError:
+                print "MySQL Error: %s" % str(e)
+                return None
+        except TypeError, e:
+            print(e)
 
     def shell_mysql_connection(dbuser, dbpass):
         pass
 
+
+    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
+        print ''.join(random.choice(chars) for _ in range(1, 15))
+
+
     def wp_change_passwords():
         cp_path = os.path.join('/home/', cpaneluser)
         if not os.stat(cp_path):
-            print'No such directory'
+            print'No such dir.'
         else:
             for root, subFolders, files in os.walk(cp_path):
                 wp_files = []
@@ -51,29 +57,28 @@ def main(argv):
                                 if (re.match('define.*DB_USER.*\'(.*)\'', new_line)):
                                     m = re.match('define.*DB_USER.*\'(.*)\'', new_line)
                                     dbuser = m.groups()[0]
-                                    print dbuser
-                            elif 'define(\'DB_NAME\'' in line:
-                                new_line = line.strip('\n')
-                                if (re.match('define.*DB_NAME.*\'(.*)\'', new_line)):
-                                    m = re.match('define.*DB_NAME.*\'(.*)\'', new_line)
-                                    dbname = m.groups()[0]
-                                    print dbname
+                                    #print'DB_USERNAME: ',dbuser
+                            # elif 'define(\'DB_NAME\'' in line:
+                            #     new_line = line.strip('\n')
+                            #     if (re.match('define.*DB_NAME.*\'(.*)\'', new_line)):
+                            #         m = re.match('define.*DB_NAME.*\'(.*)\'', new_line)
+                            #         dbname = m.groups()[0]
+                            #         print dbname
                             elif 'define(\'DB_PASSWORD\'' in line:
                                 new_line = line.strip('\n')
                                 if (re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)):
                                     m = re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)
                                     dbpass = m.groups()[0]
-                                    print dbpass
+                                    #print'DB_PASSWORD:',dbpass
                                 # print mysql_connection(dbuser, dbuser, dbpass)
-                                conn_result = mysql_connection(dbuser, dbuser, dbpass)
+                                conn_result = mysql_connection(dbuser, dbpass)
                                 if conn_result == 1:
-                                    print "Change"
+                                    #print "Change"
+                                    wp_users.update({dbuser: dbpass})
                                 else:
-                                    print "No change"
-
-    def random_generator(size=10,
-                         chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
-        print ''.join(random.choice(chars) for _ in range(1, 15))
+                                    pass
+                                    #print "No change"
+            print'Found users: \n',wp_users
 
     try:
         opts, args = getopt.getopt(argv, "hc:p:", ["cpanel=", "cms="])
