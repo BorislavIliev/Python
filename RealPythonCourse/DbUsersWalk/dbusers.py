@@ -31,6 +31,11 @@ def main(argv):
     def shell_mysql_connection(dbuser, dbpass):
         pass
 
+
+    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
+        print ''.join(random.choice(chars) for _ in range(1, 15))
+
+
     def wp_change_passwords():
         cp_path = os.path.join('/home/', cpaneluser)
         if not os.stat(cp_path):
@@ -52,7 +57,7 @@ def main(argv):
                                 if (re.match('define.*DB_USER.*\'(.*)\'', new_line)):
                                     m = re.match('define.*DB_USER.*\'(.*)\'', new_line)
                                     dbuser = m.groups()[0]
-                                    print dbuser
+                                    #print'DB_USERNAME: ',dbuser
                             # elif 'define(\'DB_NAME\'' in line:
                             #     new_line = line.strip('\n')
                             #     if (re.match('define.*DB_NAME.*\'(.*)\'', new_line)):
@@ -64,17 +69,16 @@ def main(argv):
                                 if (re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)):
                                     m = re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)
                                     dbpass = m.groups()[0]
-                                    print dbpass
+                                    #print'DB_PASSWORD:',dbpass
                                 # print mysql_connection(dbuser, dbuser, dbpass)
                                 conn_result = mysql_connection(dbuser, dbpass)
                                 if conn_result == 1:
-                                    print "Change"
+                                    #print "Change"
+                                    wp_users.update({dbuser: dbpass})
                                 else:
-                                    print "No change"
-
-    def random_generator(size=10,
-                         chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
-        print ''.join(random.choice(chars) for _ in range(1, 15))
+                                    pass
+                                    #print "No change"
+            print'Found users: \n',wp_users
 
     try:
         opts, args = getopt.getopt(argv, "hc:p:", ["cpanel=", "cms="])
