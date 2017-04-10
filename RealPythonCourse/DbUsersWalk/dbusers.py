@@ -1,8 +1,5 @@
 import os
 import sys
-import fnmatch
-import glob
-from os import walk
 import re
 import MySQLdb
 import string
@@ -14,9 +11,11 @@ import subprocess
 def main(argv):
     cpaneluser = ''
     cms = ''
-    def mysql_connection(dbuser, dbname, dbpass):
+
+    def mysql_connection(dbuser, dbpass):
         try:
-            db = MySQLdb.connect(host='localhost', user=dbuser, passwd=dbpass, db=dbname)
+            db = MySQLdb.connect(host='localhost', user=dbuser, passwd=dbpass)
+            db.close()
             return 1
         # Check if connection was successful
         except MySQLdb.Error, e:
@@ -54,12 +53,12 @@ def main(argv):
                                     m = re.match('define.*DB_USER.*\'(.*)\'', new_line)
                                     dbuser = m.groups()[0]
                                     print dbuser
-                            elif 'define(\'DB_NAME\'' in line:
-                                new_line = line.strip('\n')
-                                if (re.match('define.*DB_NAME.*\'(.*)\'', new_line)):
-                                    m = re.match('define.*DB_NAME.*\'(.*)\'', new_line)
-                                    dbname = m.groups()[0]
-                                    print dbname
+                            # elif 'define(\'DB_NAME\'' in line:
+                            #     new_line = line.strip('\n')
+                            #     if (re.match('define.*DB_NAME.*\'(.*)\'', new_line)):
+                            #         m = re.match('define.*DB_NAME.*\'(.*)\'', new_line)
+                            #         dbname = m.groups()[0]
+                            #         print dbname
                             elif 'define(\'DB_PASSWORD\'' in line:
                                 new_line = line.strip('\n')
                                 if (re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)):
@@ -67,7 +66,7 @@ def main(argv):
                                     dbpass = m.groups()[0]
                                     print dbpass
                                 # print mysql_connection(dbuser, dbuser, dbpass)
-                                conn_result = mysql_connection(dbuser, dbuser, dbpass)
+                                conn_result = mysql_connection(dbuser, dbpass)
                                 if conn_result == 1:
                                     print "Change"
                                 else:
