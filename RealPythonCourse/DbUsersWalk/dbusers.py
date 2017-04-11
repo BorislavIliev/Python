@@ -7,7 +7,7 @@ import random
 import getopt
 import subprocess
 
-
+wp_users = dict()
 def main(argv):
     cpaneluser = ''
     cms = ''
@@ -32,8 +32,8 @@ def main(argv):
         pass
 
 
-    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
-        print ''.join(random.choice(chars) for _ in range(1, 15))
+#    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
+#        print ''.join(random.choice(chars) for _ in range(1, 15))
 
 
     def wp_change_passwords():
@@ -43,7 +43,6 @@ def main(argv):
         else:
             for root, subFolders, files in os.walk(cp_path):
                 wp_files = []
-                wp_users = dict()
                 if 'wp-config.php' in files:
                     print(os.path.join(root, 'wp-config.php'))
                     wp_file_path = os.path.join(root, 'wp-config.php')
@@ -73,13 +72,13 @@ def main(argv):
                                 # print mysql_connection(dbuser, dbuser, dbpass)
                                 conn_result = mysql_connection(dbuser, dbpass)
                                 if conn_result == 1:
-                                    #print "Change"
+                                    print "Change"
                                     wp_users.update({dbuser: dbpass})
                                 else:
                                     pass
                                     #print "No change"
-            print'Found users: \n',wp_users
-
+		        print'Found users: \n',wp_users
+	return wp_users
     try:
         opts, args = getopt.getopt(argv, "hc:p:", ["cpanel=", "cms="])
     except getopt.GetoptError:
@@ -98,6 +97,7 @@ def main(argv):
         wp_change_passwords()
     print'Cpanel user is ', cpaneluser
     print'CMS type: ', cms
+    print'All users: \n',wp_users
 
 
 if __name__ == "__main__":
