@@ -12,6 +12,7 @@ wp_users = dict()
 def main(argv):
     cpaneluser = ''
     cms = ''
+    mysql = ''
 
     def mysql_connection(dbuser, dbpass):
         try:
