@@ -43,7 +43,7 @@ def main(argv):
         if not os.stat(cp_path):
             print'No such dir.'
         else:
-            for root, subFolders, files in os.listdir(cp_path):
+            for root, subFolders, files in os.walk(cp_path):
                 wp_files = []
                 if 'wp-config.php' in files:
                     print(os.path.join(root, 'wp-config.php'))
