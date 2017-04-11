@@ -31,8 +31,8 @@ def main(argv):
 
     def shell_mysql_connection():
         for key, value in wp_users.iteritems():
-            cmd = 'whmapi1 set_mysql_password user={} password={} cpuser={}'.format(key, value, cpaneluser)
-            print cmd
+            cmd = 'whmapi1 set_mysql_password user={0} password={1} cpuser={2}'.format(key, value, cpaneluser)
+            subprocess.call(cmd)
 
 
 #    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
