@@ -77,7 +77,7 @@ def main(argv):
                                 else:
                                     pass
                                     #print "No change"
-		        print'Found users: \n',wp_users
+		        #print'Found users: \n',wp_users
 	return wp_users
     try:
         opts, args = getopt.getopt(argv, "hc:p:", ["cpanel=", "cms="])
