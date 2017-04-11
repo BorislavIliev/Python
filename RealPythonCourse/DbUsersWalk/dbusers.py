@@ -31,8 +31,8 @@ def main(argv):
 
     def shell_mysql_connection():
         for key, value in wp_users.iteritems():
-            cmd = 'whmapi1 set_mysql_password user={0} password={1} cpuser={2}'.format(key, value, cpaneluser)
-            subprocess.call(cmd)
+            cmd = 'whmapi1 set_mysql_password user={0} password=\'{1}\' cpuser={2}'.format(key, value, cpaneluser)
+            subprocess.call(cmd, shell=True)
 
 
 #    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
@@ -43,7 +43,7 @@ def main(argv):
         if not os.stat(cp_path):
             print'No such dir.'
         else:
-            for root, subFolders, files in os.walk(cp_path):
+            for root, subFolders, files in os.listdir(cp_path):
                 wp_files = []
                 if 'wp-config.php' in files:
                     print(os.path.join(root, 'wp-config.php'))
@@ -58,7 +58,7 @@ def main(argv):
                                 if (re.match('define.*DB_USER.*\'(.*)\'', new_line)):
                                     m = re.match('define.*DB_USER.*\'(.*)\'', new_line)
                                     dbuser = m.groups()[0]
-                                    #print'DB_USERNAME: ',dbuser
+                                    print'DB_USERNAME: ',dbuser
                             # elif 'define(\'DB_NAME\'' in line:
                             #     new_line = line.strip('\n')
                             #     if (re.match('define.*DB_NAME.*\'(.*)\'', new_line)):
@@ -70,11 +70,11 @@ def main(argv):
                                 if (re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)):
                                     m = re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)
                                     dbpass = m.groups()[0]
-                                    #print'DB_PASSWORD:',dbpass
+                                    print'DB_PASSWORD:',dbpass
                                 # print mysql_connection(dbuser, dbuser, dbpass)
                                 conn_result = mysql_connection(dbuser, dbpass)
                                 if conn_result == 1:
-                                    print "Change"
+                                    #print "Change"
                                     wp_users.update({dbuser: dbpass})
                                 else:
                                     pass
@@ -83,7 +83,7 @@ def main(argv):
 	return wp_users
 
     try:
-        opts, args = getopt.getopt(argv, "hc:p:", ["cpanel=", "cms="])
+        opts, args = getopt.getopt(argv, "hc:p:m:", ["cpanel=", "cms=", "mysql="])
     except getopt.GetoptError:
         print 'You are using an invalid option.'
         sys.exit(2)
@@ -95,9 +95,12 @@ def main(argv):
             cpaneluser = arg
         elif opt in ("-p", "--cms"):
             cms = arg
+        elif opt in ("-m", "--mysql"):
+            mysql = arg
     if cms == 'wordpress':
         print'Wordpress'
         wp_change_passwords()
+    if mysql == 'change':
         shell_mysql_connection()
     print'Cpanel user is ', cpaneluser
     print'CMS type: ', cms
