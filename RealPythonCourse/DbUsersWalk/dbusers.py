@@ -6,6 +6,7 @@ import string
 import random
 import getopt
 import subprocess
+import itertools
 
 wp_users = dict()
 def main(argv):
@@ -28,13 +29,14 @@ def main(argv):
         except TypeError, e:
             print(e)
 
-    def shell_mysql_connection(dbuser, dbpass):
-        pass
+    def shell_mysql_connection():
+        for key, value in wp_users.iteritems():
+            cmd = 'whmapi1 set_mysql_password user={} password={} cpuser={}'.format(key, value, cpaneluser)
+            print cmd
 
 
 #    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
 #        print ''.join(random.choice(chars) for _ in range(1, 15))
-
 
     def wp_change_passwords():
         cp_path = os.path.join('/home/', cpaneluser)
@@ -79,6 +81,7 @@ def main(argv):
                                     #print "No change"
 		        #print'Found users: \n',wp_users
 	return wp_users
+
     try:
         opts, args = getopt.getopt(argv, "hc:p:", ["cpanel=", "cms="])
     except getopt.GetoptError:
@@ -95,6 +98,7 @@ def main(argv):
     if cms == 'wordpress':
         print'Wordpress'
         wp_change_passwords()
+        shell_mysql_connection()
     print'Cpanel user is ', cpaneluser
     print'CMS type: ', cms
     print'All users: \n',wp_users
