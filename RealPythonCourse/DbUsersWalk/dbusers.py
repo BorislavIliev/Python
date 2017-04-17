@@ -166,12 +166,10 @@ def main(argv):
             for i in split_arr:
                 if re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', i):
                     m = re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', i)
-                    print m.group()
                     userDirs.append(m.group())
                 if re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', i):
                     n = re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', i)
                     userUrls.append(n.group())
-                    print n.group()
             # for k,j in itertools.izip(userDirs, userUrls):
             #     dirFiles = os.listdir(k)
             #     if 'wp-config.php' in dirFiles:
@@ -183,7 +181,6 @@ def main(argv):
                 dbsArr = []
                 passwordsArr = []
                 for k in indicesUsers:
-                    print split_arr[k + 1]
                     if cpaneluser in split_arr[k + 1]:
                         usersArr.append(split_arr[k + 1])
                     elif cpaneluser in split_arr[k + 2]:
@@ -192,12 +189,10 @@ def main(argv):
                         print'Can\'t find such user'
                 indicesDbs = [i for i, x in enumerate(split_arr) if x == "softdb"]
                 for k in indicesDbs:
-                    print split_arr[k + 1]
                     dbsArr.append(split_arr[k + 1])
                 indicesPasswords = [i for i, x in enumerate(split_arr) if x == "softdbpass"]
                 for k in indicesPasswords:
                     passwordsArr.append(split_arr[k + 1])
-                    print split_arr[k + 1]
                 dbCollection = dict()
                 for i, m, n in zip(dbsArr, usersArr, passwordsArr):
                     dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
