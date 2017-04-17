@@ -162,7 +162,6 @@ def main(argv):
                     split_arr.remove(n)
                 elif re.match('^.[a-z]', n):
                     split_arr.remove(n)
-            print split_arr
             for i in split_arr:
                 if re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', i):
                     m = re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', i)
