@@ -169,7 +169,8 @@ def main(argv):
                 dirFiles = os.listdir(k)
                 if 'wp-config.php' in dirFiles:
                     print '{0} - Wordpress !'.format(j)
-                print(set(dirFiles) & set(drupalDefaultFiles))
+                if (set(dirFiles) & set(drupalDefaultFiles) == 31:
+                    print '{0} - Drupal !'.format(j)
 
 
 
