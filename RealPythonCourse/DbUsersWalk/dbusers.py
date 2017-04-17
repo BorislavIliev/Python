@@ -135,7 +135,7 @@ def main(argv):
                     userUrls.append(m.group())
                     print n.group()
             for k,j in itertools.izip(userDirs, userUrls):
-                dirFiles = k
+                dirFiles = os.listdir(k)
                 if 'wp-config.php' in dirFiles:
                     print '{0} - Wordpress'.format(j)
 
