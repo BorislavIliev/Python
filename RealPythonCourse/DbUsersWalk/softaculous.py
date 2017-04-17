@@ -45,6 +45,6 @@ with open("installations.php", 'r') as softaculousFile:
     dbCollection = dict()
     for i,m,n in zip(dbsArr, usersArr, passwordsArr):
         dbCollection.update({i:{'dbuser': m, 'dbpass': n}})
-    for keys,values in dbCollection.iteritems():
+    for keys in dbCollection.iteritems():
         print 'mysql -u {0}, -p {1}'.format(values['dbuser'], values['dbpass'])
     print dbCollection

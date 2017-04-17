@@ -176,29 +176,29 @@ def main(argv):
             #         print '{0} - Wordpress !'.format(j)
             #     if (set(dirFiles).intersection(drupalDefaultFiles)) == 31:
             #         print '{0} - Drupal !'.format(j)
-                indicesUsers = [i for i, x in enumerate(split_arr) if x == "softdbuser"]
-                usersArr = []
-                dbsArr = []
-                passwordsArr = []
-                for k in indicesUsers:
-                    if cpaneluser in split_arr[k + 1]:
-                        usersArr.append(split_arr[k + 1])
-                    elif cpaneluser in split_arr[k + 2]:
-                        usersArr.append(split_arr[k + 2])
-                    else:
-                        print'Can\'t find such user'
-                indicesDbs = [i for i, x in enumerate(split_arr) if x == "softdb"]
-                for k in indicesDbs:
-                    dbsArr.append(split_arr[k + 1])
-                indicesPasswords = [i for i, x in enumerate(split_arr) if x == "softdbpass"]
-                for k in indicesPasswords:
-                    passwordsArr.append(split_arr[k + 1])
-                dbCollection = dict()
-                for i, m, n in zip(dbsArr, usersArr, passwordsArr):
-                    dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
-                print dbCollection
-                for keys, values in dbCollection.iteritems():
-                    mysql_connection(values['dbuser'], values['dbpass'])
+            indicesUsers = [i for i, x in enumerate(split_arr) if x == "softdbuser"]
+            usersArr = []
+            dbsArr = []
+            passwordsArr = []
+            for k in indicesUsers:
+                if cpaneluser in split_arr[k + 1]:
+                    usersArr.append(split_arr[k + 1])
+                elif cpaneluser in split_arr[k + 2]:
+                    usersArr.append(split_arr[k + 2])
+                else:
+                    print'Can\'t find such user'
+            indicesDbs = [i for i, x in enumerate(split_arr) if x == "softdb"]
+            for k in indicesDbs:
+                dbsArr.append(split_arr[k + 1])
+            indicesPasswords = [i for i, x in enumerate(split_arr) if x == "softdbpass"]
+            for k in indicesPasswords:
+                passwordsArr.append(split_arr[k + 1])
+            dbCollection = dict()
+            for i, m, n in zip(dbsArr, usersArr, passwordsArr):
+                dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
+            print dbCollection
+            for keys, values in dbCollection.iteritems():
+                mysql_connection(values['dbuser'], values['dbpass'])
 
 
 
