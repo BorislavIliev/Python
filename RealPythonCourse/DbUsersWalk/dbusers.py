@@ -188,6 +188,8 @@ def main(argv):
                         usersArr.append(split_arr[k + 1])
                     elif cpaneluser in split_arr[k + 2]:
                         usersArr.append(split_arr[k + 2])
+                    else:
+                        print'Can\'t find such user'
                 indicesDbs = [i for i, x in enumerate(split_arr) if x == "softdb"]
                 for k in indicesDbs:
                     print split_arr[k + 1]
