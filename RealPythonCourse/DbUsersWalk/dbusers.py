@@ -135,9 +135,10 @@ def main(argv):
                     userUrls.append(m.group())
                     print n.group()
             for n in userDirs, userUrls:
-                dirFiles = os.listdir(userDirs[n])
-                if 'wp-config.php' in dirFiles:
-                    print '{0} - Wordpress'.format(userUrls[n])
+                print userDirs[n], ":", userUrls[n]
+                # dirFiles = os.listdir(userDirs[n])
+                # if 'wp-config.php' in dirFiles:
+                #     print '{0} - Wordpress'.format(userUrls[n])
 
 
 
