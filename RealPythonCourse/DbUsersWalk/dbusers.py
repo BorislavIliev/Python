@@ -134,11 +134,10 @@ def main(argv):
                     n = re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', i)
                     userUrls.append(m.group())
                     print n.group()
-            for n in userDirs:
-                for m in userUrls:
-                    dirFiles = os.listdir(n)
-                    if 'wp-config.php' in dirFiles:
-                         print '{0} - Wordpress'.format(m)
+            for k,j in itertools.izip(userDirs, userUrls):
+                dirFiles = k
+                if 'wp-config.php' in dirFiles:
+                    print '{0} - Wordpress'.format(j)
 
 
 
