@@ -201,6 +201,7 @@ def main(argv):
                 dbCollection = dict()
                 for i, m, n in zip(dbsArr, usersArr, passwordsArr):
                     dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
+                print dbCollection
                 for keys, values in dbCollection.iteritems():
                     mysql_connection(values['dbuser'], values['dbpass'])
 
