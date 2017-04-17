@@ -1,7 +1,7 @@
 import os
 import sys
 import re
-#import MySQLdb
+import MySQLdb
 import string
 import random
 import getopt
