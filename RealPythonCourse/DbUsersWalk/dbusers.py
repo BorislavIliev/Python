@@ -39,6 +39,37 @@ def main(argv):
 	'xmlrpc.php',
                           )
 
+    drupalDefaultFiles = (
+    'authorize.php',
+    'cgi-bin',
+    'CHANGELOG.txt',
+    'COPYRIGHT.txt',
+    'cron.php',
+    '.editorconfig',
+    '.gitignore',
+    '.htaccess',
+    'includes',
+    'index.php',
+    'INSTALL.mysql.txt',
+    'INSTALL.pgsql.txt',
+    'INSTALL.sqlite.txt',
+    'INSTALL.txt',
+    'LICENSE.txt',
+    'MAINTAINERS.txt',
+    'misc',
+    'modules',
+    'profiles',
+    'README.txt',
+    'robots.txt',
+    'scripts',
+    'sites',
+    'themes',
+    'update.php',
+    'UPGRADE.txt',
+    'web.config',
+    'xmlrpc.php',
+    )
+
     def mysql_connection(dbuser, dbpass):
         try:
             db = MySQLdb.connect(host='localhost', user=dbuser, passwd=dbpass)
@@ -138,6 +169,7 @@ def main(argv):
                 dirFiles = os.listdir(k)
                 if 'wp-config.php' in dirFiles:
                     print '{0} - Wordpress'.format(j)
+                print(set(dirFiles) & set(drupalDefaultFiles))
 
 
 
