@@ -170,7 +170,7 @@ def main(argv):
                     userDirs.append(m.group())
                 if re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', i):
                     n = re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', i)
-                    userUrls.append(m.group())
+                    userUrls.append(n.group())
                     print n.group()
             # for k,j in itertools.izip(userDirs, userUrls):
             #     dirFiles = os.listdir(k)
