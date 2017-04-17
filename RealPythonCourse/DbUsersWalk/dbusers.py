@@ -168,7 +168,7 @@ def main(argv):
             for k,j in itertools.izip(userDirs, userUrls):
                 dirFiles = os.listdir(k)
                 if 'wp-config.php' in dirFiles:
-                    print '{0} - Wordpress'.format(j)
+                    print '{0} - Wordpress !'.format(j)
                 print(set(dirFiles) & set(drupalDefaultFiles))
 
 
