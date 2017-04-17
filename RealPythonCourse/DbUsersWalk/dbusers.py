@@ -100,8 +100,6 @@ def main(argv):
             softInstalls = softaculousFile.read().replace("\n", '')
             m = re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', softInstalls)
             split_arr = re.split(": |\"", softInstalls)
-            print split_arr
-            print type(split_arr)
             for i in split_arr:
                 if re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', i):
                     m = re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', i)
