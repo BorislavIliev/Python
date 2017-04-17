@@ -74,6 +74,7 @@ def main(argv):
         try:
             db = MySQLdb.connect(host='localhost', user=dbuser, passwd=dbpass)
             db.close()
+            print 'Sucessful Connection!'
             return 1
         # Check if connection was successful
         except MySQLdb.Error, e:
@@ -165,12 +166,32 @@ def main(argv):
                     n = re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', i)
                     userUrls.append(m.group())
                     print n.group()
-            for k,j in itertools.izip(userDirs, userUrls):
-                dirFiles = os.listdir(k)
-                if 'wp-config.php' in dirFiles:
-                    print '{0} - Wordpress !'.format(j)
-                if (set(dirFiles).intersection(drupalDefaultFiles)) == 31:
-                    print '{0} - Drupal !'.format(j)
+            # for k,j in itertools.izip(userDirs, userUrls):
+            #     dirFiles = os.listdir(k)
+            #     if 'wp-config.php' in dirFiles:
+            #         print '{0} - Wordpress !'.format(j)
+            #     if (set(dirFiles).intersection(drupalDefaultFiles)) == 31:
+            #         print '{0} - Drupal !'.format(j)
+                indicesUsers = [i for i, x in enumerate(split_arr) if x == "softdbuser"]
+                usersArr = []
+                dbsArr = []
+                passwordsArr = []
+                for k in indicesUsers:
+                    print split_arr[k + 1]
+                    usersArr.append(split_arr[k + 1])
+                indicesDbs = [i for i, x in enumerate(split_arr) if x == "softdb"]
+                for k in indicesDbs:
+                    print split_arr[k + 1]
+                    dbsArr.append(split_arr[k + 1])
+                indicesPasswords = [i for i, x in enumerate(split_arr) if x == "softdbpass"]
+                for k in indicesPasswords:
+                    passwordsArr.append(split_arr[k + 1])
+                    print split_arr[k + 1]
+                dbCollection = dict()
+                for i, m, n in zip(dbsArr, usersArr, passwordsArr):
+                    dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
+                for keys, values in dbCollection.iteritems():
+                    mysql_connection(values['dbuser'], values['dbpass'])
 
 
 
