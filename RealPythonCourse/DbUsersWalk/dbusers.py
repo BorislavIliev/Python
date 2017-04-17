@@ -95,7 +95,7 @@ def main(argv):
                     joomla_files.append(file_path)
 
     def softaculous():
-        with open(os.path.join('/home/', cpaneluser, '/.softaculous/installations.php', 'r')) as softaculousFile:
+        with open(os.path.join('/home/', cpaneluser, '/.softaculous/installations.php'), 'r') as softaculousFile:
             softInstalls = softaculousFile.read().replace("\n", '')
             m = re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', softInstalls)
             split_arr = re.split(": |\"", softInstalls)
