@@ -8,11 +8,13 @@ import getopt
 import subprocess
 import itertools
 
-wp_users = dict()
+
 def main(argv):
     cpaneluser = ''
     cms = ''
     mysql = ''
+    wp_users = dict()
+    softa = ''
 
     def mysql_connection(dbuser, dbpass):
         try:
@@ -35,9 +37,8 @@ def main(argv):
             cmd = 'whmapi1 set_mysql_password user={0} password=\'{1}\' cpuser={2}'.format(key, value, cpaneluser)
             subprocess.call(cmd, shell=True)
 
-
-#    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
-#        print ''.join(random.choice(chars) for _ in range(1, 15))
+    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
+        print ''.join(random.choice(chars) for _ in range(1, 15))
 
     def wp_change_passwords():
         cp_path = os.path.join('/home/', cpaneluser)
@@ -59,7 +60,7 @@ def main(argv):
                                 if (re.match('define.*DB_USER.*\'(.*)\'', new_line)):
                                     m = re.match('define.*DB_USER.*\'(.*)\'', new_line)
                                     dbuser = m.groups()[0]
-                                    print'DB_USERNAME: ',dbuser
+                                    print'DB_USERNAME: ', dbuser
                             # elif 'define(\'DB_NAME\'' in line:
                             #     new_line = line.strip('\n')
                             #     if (re.match('define.*DB_NAME.*\'(.*)\'', new_line)):
@@ -71,20 +72,45 @@ def main(argv):
                                 if (re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)):
                                     m = re.match('define.*DB_PASSWORD.*\'(.*)\'', new_line)
                                     dbpass = m.groups()[0]
-                                    print'DB_PASSWORD:',dbpass
+                                    print'DB_PASSWORD:', dbpass
                                 # print mysql_connection(dbuser, dbuser, dbpass)
                                 conn_result = mysql_connection(dbuser, dbpass)
                                 if conn_result == 1:
-                                    #print "Change"
+                                    # print "Change"
                                     wp_users.update({dbuser: dbpass})
                                 else:
                                     pass
-                                    #print "No change"
-		        #print'Found users: \n',wp_users
-	return wp_users
+                                    # print "No change"
+                                    # print'Found users: \n',wp_users
+        return wp_users
+
+    def jooma_change_passwords():
+        cp_path = os.path.join('/home/', cpaneluser)
+        for root, subFolders, files in os.walk(cp_path):
+            joomla_files = []
+            if 'configuration.php' in files:
+                file_path = os.path.join(root, 'configuration.php')
+                if 'components' not in file_path:
+                    print file_path
+                    joomla_files.append(file_path)
+
+    def softaculous():
+        with open(os.path.join('/home/', cpaneluser, '/.softaculous/installations.php', 'r')) as softaculousFile:
+            softInstalls = softaculousFile.read().replace("\n", '')
+            m = re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', softInstalls)
+            split_arr = re.split(": |\"", softInstalls)
+            print split_arr
+            print type(split_arr)
+            for i in split_arr:
+                if re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', i):
+                    m = re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', i)
+                    print m.group()
+                if re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', i):
+                    n = re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', i)
+                    print n.group()
 
     try:
-        opts, args = getopt.getopt(argv, "hc:p:m:", ["cpanel=", "cms=", "mysql="])
+        opts, args = getopt.getopt(argv, "hc:p:m:s:", ["cpanel=", "cms=", "mysql=", "softaculous="])
     except getopt.GetoptError:
         print 'You are using an invalid option.'
         sys.exit(2)
@@ -98,26 +124,22 @@ def main(argv):
             cms = arg
         elif opt in ("-m", "--mysql"):
             mysql = arg
+        elif opt in ("-s", "--softaculous"):
+            softa = arg
     if cms == 'wordpress':
         print'Wordpress'
         wp_change_passwords()
+        print'All users: \n', wp_users
+    if cms == 'joomla':
+        print'Joomla'
+        jooma_change_passwords()
     if mysql == 'change':
         shell_mysql_connection()
+    if softa == 'read':
+        softaculous()
     print'Cpanel user is ', cpaneluser
     print'CMS type: ', cms
-    print'All users: \n',wp_users
 
 
 if __name__ == "__main__":
     main(sys.argv[1:])
-
-# for root, subFolders, files in os.walk('/home/borislav/'):
-#	joomla_files = []
-#       	if 'configuration.php' in files:
-#               	file_path = os.path.join(root, 'configuration.php')
-#		if 'components' not in file_path:
-#			print file_path<>
-#			joomla_files.append(file_path)	
-# for root, subFolders, files in os.walk('/home/borislav/'):
-#       	if 'config.php' in files:
-#               	print(os.path.join(root, 'config.php'))
