@@ -16,6 +16,29 @@ def main(argv):
     wp_users = dict()
     softa = ''
 
+    wpDefaultFiles = (
+    'index.php',
+    'license.txt',
+    'readme.html',
+	'wp-activate.php',
+	'wp-app.php',
+	'wp-blog-header.php',
+	'wp-comments-post.php',
+	'wp-config-sample.php',
+    'wp-config.php',
+	'wp-cron.php',
+	'wp-links-opml.php',
+	'wp-load.php',
+	'wp-login.php',
+	'wp-mail.php',
+	'wp-pass.php',
+	'wp-register.php',
+	'wp-settings.php',
+	'wp-signup.php',
+	'wp-trackback.php',
+	'xmlrpc.php',
+                          )
+
     def mysql_connection(dbuser, dbpass):
         try:
             db = MySQLdb.connect(host='localhost', user=dbuser, passwd=dbpass)
@@ -95,6 +118,8 @@ def main(argv):
                     joomla_files.append(file_path)
 
     def softaculous():
+        userDirs = []
+        userUrls = []
         softaFile = ('/home/{0}/.softaculous/installations.php'.format(cpaneluser))
         with open(softaFile, 'r') as softaculousFile:
             softInstalls = softaculousFile.read().replace("\n", '')
@@ -104,9 +129,17 @@ def main(argv):
                 if re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', i):
                     m = re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', i)
                     print m.group()
+                    userDirs.append(m.group())
                 if re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', i):
                     n = re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', i)
+                    userUrls.append(m.group())
                     print n.group()
+            for n in userDirs, userUrls:
+                dirFiles = os.listdir(userDirs[n])
+                if 'wp-config.php' in dirFiles:
+                    print '{0} - Wordpress'.format(userUrls[n])
+
+
 
     try:
         opts, args = getopt.getopt(argv, "hc:p:m:s:", ["cpanel=", "cms=", "mysql=", "softaculous="])
