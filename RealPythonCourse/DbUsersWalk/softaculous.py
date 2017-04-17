@@ -4,13 +4,15 @@ import json
 import re
 import itertools
 
+cpaneluser = 'borislav'
 
 with open("installations.php", 'r') as softaculousFile:
     softInstalls = softaculousFile.read().replace("\n", '')
     m = re.match('^[\'"]?(?:\/[^\/]+)*[\'"]?$', softInstalls)
     split_arr = re.split(": |\"", softInstalls)
     for n in split_arr:
-        if re.match('^\;[a-z]\:[0-9]+\:$', n):
+        if re.match('^;[a-z]\:[0-9]+\:$', n):
+            print n
             split_arr.remove(n)
         elif re.match('^.[a-z]', n):
             split_arr.remove(n)
@@ -27,8 +29,11 @@ with open("installations.php", 'r') as softaculousFile:
     dbsArr = []
     passwordsArr = []
     for k in indicesUsers:
-        print split_arr[k+1]
-        usersArr.append(split_arr[k+1])
+        print split_arr[k + 1]
+        if cpaneluser in split_arr[k + 1]:
+            usersArr.append(split_arr[k + 1])
+        elif cpaneluser in split_arr[k + 2]:
+                usersArr.append(split_arr[k + 2])
     indicesDbs = [i for i, x in enumerate(split_arr) if x == "softdb"]
     for k in indicesDbs:
         print split_arr[k+1]
@@ -42,3 +47,4 @@ with open("installations.php", 'r') as softaculousFile:
         dbCollection.update({i:{'dbuser': m, 'dbpass': n}})
     for keys,values in dbCollection.iteritems():
         print 'mysql -u {0}, -p {1}'.format(values['dbuser'], values['dbpass'])
+    print dbCollection

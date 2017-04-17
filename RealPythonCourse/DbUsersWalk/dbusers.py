@@ -1,7 +1,7 @@
 import os
 import sys
 import re
-import MySQLdb
+#import MySQLdb
 import string
 import random
 import getopt
@@ -184,7 +184,11 @@ def main(argv):
                 passwordsArr = []
                 for k in indicesUsers:
                     print split_arr[k + 1]
-                    usersArr.append(split_arr[k + 1])
+                    if cpaneluser in split_arr[k + 1]:
+                        usersArr.append(split_arr[k + 1])
+                    else:
+                        if cpaneluser in split_arr[k +2]:
+                            usersArr.append(split_arr[k+2])
                 indicesDbs = [i for i, x in enumerate(split_arr) if x == "softdb"]
                 for k in indicesDbs:
                     print split_arr[k + 1]
