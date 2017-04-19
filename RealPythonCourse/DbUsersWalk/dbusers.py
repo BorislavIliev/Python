@@ -220,7 +220,7 @@ def main(argv):
                         print dbCollection
                 else:
                     dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
-                    print dbCollection
+            print dbCollection
             for keys, values in dbCollection.iteritems():
                 if mysql == 'change':
                     if mysql_connection(values['dbuser'], values['dbpass']):
