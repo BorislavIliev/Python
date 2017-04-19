@@ -16,6 +16,7 @@ def main(argv):
     wp_users = dict()
     softa = ''
     mode = ''
+    source = ''
 
     wpDefaultFiles = (
     'index.php',
@@ -158,16 +159,17 @@ def main(argv):
                     joomla_files.append(file_path)
 
     def softaculous():
-        usersList = []
-        cp_path = os.path.join('/home/', cpaneluser)
-        mysqlUsersFile = os.path.join(cp_path, 'mysqlusers.txt')
-        if not os.stat(cp_path):
-            print('No such dir.')
-        else:
-            with open(mysqlUsersFile, 'r') as usersFile:
-                for line in usersFile:
-                    newLine = line.strip('\n')
-                    usersList.append(newLine)
+        if not source == '':
+            usersList = []
+            cp_path = os.path.join('/home/', cpaneluser)
+            mysqlUsersFile = os.path.join(cp_path, 'mysqlusers.txt')
+            if not os.stat(cp_path):
+                print('No such dir.')
+            else:
+                with open(mysqlUsersFile, 'r') as usersFile:
+                    for line in usersFile:
+                        newLine = line.strip('\n')
+                        usersList.append(newLine)
         userDirs = []
         userUrls = []
         softaFile = ('/home/{0}/.softaculous/installations.php'.format(cpaneluser))
@@ -212,13 +214,16 @@ def main(argv):
                 passwordsArr.append(split_arr[k + 1])
             dbCollection = dict()
             for i, m, n in zip(dbsArr, usersArr, passwordsArr):
-                if i in usersList:
+                if usersList and i in usersList:
                     dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
             print dbCollection
             for keys, values in dbCollection.iteritems():
-                if mysql_connection(values['dbuser'], values['dbpass']):
-                        whpapiChangePass(values['dbuser'], values['dbpass'])
-                        print values['dbuser'], '-', values['dbpass']
+                if mysql == 'change':
+                    if mysql_connection(values['dbuser'], values['dbpass']):
+                            whpapiChangePass(values['dbuser'], values['dbpass'])
+                            print values['dbuser'], '-', values['dbpass']
+                else:
+                    print'{\'values[\'dbuser\']\': \'values[\'dbpass\']'
 
 
     def phponly():
@@ -256,7 +261,7 @@ def main(argv):
 
 
     try:
-        opts, args = getopt.getopt(argv, "hc:p:m:s:f", ["cpanel=", "cms=", "mysql=", "softaculous=", "files="])
+        opts, args = getopt.getopt(argv, "hc:p:m:s:f:i", ["cpanel=", "cms=", "mysql=", "softaculous=", "files=", "input="])
     except getopt.GetoptError:
         print 'You are using an invalid option.'
         sys.exit(2)
@@ -274,6 +279,8 @@ def main(argv):
             softa = arg
         elif opt in ("-f", "--files"):
             mode = arg
+        elif opt in ("-i", "--input"):
+            source = arg
     if cms == 'wordpress':
         print'Wordpress'
         wp_change_passwords()
