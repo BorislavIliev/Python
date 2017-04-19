@@ -15,6 +15,7 @@ def main(argv):
     mysql = ''
     wp_users = dict()
     softa = ''
+    mode = ''
 
     wpDefaultFiles = (
     'index.php',
@@ -92,8 +93,15 @@ def main(argv):
             cmd = 'whmapi1 set_mysql_password user={0} password=\'{1}\' cpuser={2}'.format(key, value, cpaneluser)
             subprocess.call(cmd, shell=True)
 
-    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)({}[]+<>'):
-        print ''.join(random.choice(chars) for _ in range(1, 15))
+    def whpapiChangePass(usr, password):
+        cmd = 'whmapi1 set_mysql_password user={0} password=\'{1}\' cpuser={2}'.format(usr, password, cpaneluser)
+        print cmd
+        subprocess.call(cmd, shell=True)
+
+
+    def random_generator(size=10, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase + '@#?%^&*$!-_)([]'):
+        passwd = ''.join(random.choice(chars) for _ in range(1, 15))
+        return passwd
 
     def wp_change_passwords():
         cp_path = os.path.join('/home/', cpaneluser)
@@ -150,6 +158,16 @@ def main(argv):
                     joomla_files.append(file_path)
 
     def softaculous():
+        usersList = []
+        cp_path = os.path.join('/home/', cpaneluser)
+        mysqlUsersFile = os.path.join(cp_path, 'mysqlusers.txt')
+        if not os.stat(cp_path):
+            print('No such dir.')
+        else:
+            with open(mysqlUsersFile, 'r') as usersFile:
+                for line in usersFile:
+                    newLine = line.strip('\n')
+                    usersList.append(newLine)
         userDirs = []
         userUrls = []
         softaFile = ('/home/{0}/.softaculous/installations.php'.format(cpaneluser))
@@ -194,15 +212,51 @@ def main(argv):
                 passwordsArr.append(split_arr[k + 1])
             dbCollection = dict()
             for i, m, n in zip(dbsArr, usersArr, passwordsArr):
-                dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
+                if i in usersList:
+                    dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
             print dbCollection
             for keys, values in dbCollection.iteritems():
-                mysql_connection(values['dbuser'], values['dbpass'])
+                if mysql_connection(values['dbuser'], values['dbpass']):
+                        whpapiChangePass(values['dbuser'], values['dbpass'])
+                        print values['dbuser'], '-', values['dbpass']
 
+
+    def phponly():
+        usersList = []
+        foundUsers = []
+        cp_path = os.path.join('/home/', cpaneluser)
+        mysqlUsersFile = os.path.join(cp_path, 'mysqlusers.txt')
+        exclude_prefixes = ['.softaculous', 'www', '.trash']
+        if not os.stat(cp_path):
+            print('No such dir.')
+        else:
+            with open(mysqlUsersFile, 'r') as usersFile:
+                for line in usersFile:
+                    newLine = line.strip('\n')
+                    usersList.append(newLine)
+            for root, subFolders, files in os.walk(cp_path):
+                subFolders[:] = [d for d in subFolders if d not in exclude_prefixes]
+                for file in files:
+                    if file.endswith('.php') or file.endswith('.yml'):
+                        phpfilepath = os.path.join(root, file)
+                        with open(phpfilepath, 'r') as phpfile:
+                            for line in phpfile:
+                                new_line = line.strip('\n')
+                                for i in usersList:
+                                    if i in new_line:
+                                        fpath = os.path.join(root, file)
+                                        print fpath, '<->', line,
+                                        foundUsers.append(i)
+        notFound = list(set(usersList) - set(foundUsers))
+        print'Users not found:', notFound
+        newPass = random_generator()
+        for i in notFound:
+            whpapiChangePass(i, newPass)
+            print i, '-', newPass
 
 
     try:
-        opts, args = getopt.getopt(argv, "hc:p:m:s:", ["cpanel=", "cms=", "mysql=", "softaculous="])
+        opts, args = getopt.getopt(argv, "hc:p:m:s:f", ["cpanel=", "cms=", "mysql=", "softaculous=", "files="])
     except getopt.GetoptError:
         print 'You are using an invalid option.'
         sys.exit(2)
@@ -218,6 +272,8 @@ def main(argv):
             mysql = arg
         elif opt in ("-s", "--softaculous"):
             softa = arg
+        elif opt in ("-f", "--files"):
+            mode = arg
     if cms == 'wordpress':
         print'Wordpress'
         wp_change_passwords()
@@ -229,6 +285,8 @@ def main(argv):
         shell_mysql_connection()
     if softa == 'read':
         softaculous()
+    if mode == 'php':
+        phponly()
     print'Cpanel user is ', cpaneluser
     print'CMS type: ', cms
 
