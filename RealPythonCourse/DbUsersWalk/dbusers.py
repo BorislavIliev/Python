@@ -214,16 +214,20 @@ def main(argv):
                 passwordsArr.append(split_arr[k + 1])
             dbCollection = dict()
             for i, m, n in zip(dbsArr, usersArr, passwordsArr):
-                if usersList and i in usersList:
+                if not source == '':
+                    if usersList and i in usersList:
+                        dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
+                        print dbCollection
+                else:
                     dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
-            print dbCollection
+                    print dbCollection
             for keys, values in dbCollection.iteritems():
                 if mysql == 'change':
                     if mysql_connection(values['dbuser'], values['dbpass']):
                             whpapiChangePass(values['dbuser'], values['dbpass'])
                             print values['dbuser'], '-', values['dbpass']
                 else:
-                    print'{\'values[\'dbuser\']\': \'values[\'dbpass\']'
+                    print 'Done. Not changing passwords.'
 
 
     def phponly():
