@@ -7,6 +7,7 @@ import random
 import getopt
 import subprocess
 import itertools
+import json
 
 
 def main(argv):
@@ -221,6 +222,8 @@ def main(argv):
                 else:
                     dbCollection.update({i: {'dbuser': m, 'dbpass': n}})
             print dbCollection
+            jsondb = json.dumps(dbCollection)
+            print jsondb
             for keys, values in dbCollection.iteritems():
                 if mysql == 'change':
                     if mysql_connection(values['dbuser'], values['dbpass']):
