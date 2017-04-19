@@ -159,8 +159,8 @@ def main(argv):
                     joomla_files.append(file_path)
 
     def softaculous():
+        usersList = []
         if not source == '':
-            usersList = []
             cp_path = os.path.join('/home/', cpaneluser)
             mysqlUsersFile = os.path.join(cp_path, 'mysqlusers.txt')
             if not os.stat(cp_path):
